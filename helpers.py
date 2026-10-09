@@ -131,6 +131,24 @@ def random_registrations(students, course_ids, min_k, max_k):
         reg.insert(s, random.sample(course_ids, random.randint(min_k, max_k)))
     return reg
 
+def cycle_registrations(students, course_ids):
+    reg = RegistracijasKursiem()
+    n = len(course_ids)
+    for j, s in enumerate(students):
+        reg.insert(s, [course_ids[j % n], course_ids[(j + 1) % n]])
+    return reg
+
+def planted_registrations(students, course_ids, k, per_student):
+    """
+        kursi sadalīti grupās, katrs students var ņemt kursus tikai no konkrētas grupas
+    """
+    groups = [course_ids[i::k] for i in range(k)]
+    reg = RegistracijasKursiem()
+    for s in students:
+        chosen = random.sample(groups, min(per_student, k))
+        reg.insert(s, [random.choice(g) for g in chosen])
+    return reg
+
 def create_students(n):
     for i in range(n):
         Students(f"Vārds_{i}")

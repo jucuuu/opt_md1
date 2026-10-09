@@ -4,3 +4,8 @@
 {"key": "51735b0f8250d9389d6921b1773dc38185f00932", "lower": 12, "greedy_k": 12, "exact": 12, "max_nodes": 2000000}
 {"key": "f2e8b5c66383740034e1ab0dbbea886c2e9c5630", "lower": 16, "greedy_k": 17, "exact": 16, "max_nodes": 2000000}
 {"key": "425e8a3cf9c69fa625dabb974ae93f8571c06ef9", "lower": 32, "greedy_k": 32, "exact": 32, "max_nodes": 2000000}
+{"key": "827bf4493f353fb5d1b4cea195016edd46a5a0d5", "lower": 2, "greedy_k": 2, "exact": 2, "max_nodes": 2000000}
+{"key": "35d9bf565294b7225d60ee88122d180ced8cfaaa", "lower": 2, "greedy_k": 3, "exact": 3, "max_nodes": 2000000}
+{"key": "b385f070cb3d882362172c49c4b10ae664024c78", "lower": 2, "greedy_k": 3, "exact": 2, "max_nodes": 2000000}
+{"key": "74cd338eae7529c30f43e2f137a44769f019c258", "lower": 3, "greedy_k": 3, "exact": 3, "max_nodes": 2000000}
+{"key": "60e6b94e4f2e782214475df979c0c48ef1f1e069", "lower": 4, "greedy_k": 4, "exact": 4, "max_nodes": 2000000}

@@ -2,11 +2,11 @@ import argparse
 import random
 from timeslots_tabu import Students, Kurss, RegistracijasKursiem
 from datetime import datetime
-from helpers import create_students, run_test, random_registrations, save_run
+from helpers import create_students, run_test, random_registrations, save_run, cycle_registrations, planted_registrations
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--test", type=int, nargs="+", choices=[1,2,3,4], default=[1,2,3,4],
+    parser.add_argument("--test", type=int, nargs="+", choices=[1,2,3,4,5], default=[1,2,3,4,5],
                         help="1=primitīvs piemērs, 2=mazs piemērs, 3=vidējais piemērs, 4=lielais testa piemērs (pēc noklusējuma visi)")
     parser.add_argument("--max-iters", type=int, default=100_000, help="iterācijas vienam laikam")
     parser.add_argument("--tabu-steps", type=int, default=10, help="tabu rindas garums")
@@ -105,6 +105,16 @@ def main():
     if 4 in args.test:
         tests.append(("mega tests 1 (3-5 kursi)", random_registrations(s, k, 3, 5)))
         tests.append(("mega tests 2 (5-8 kursi)", random_registrations(s, k, 5, 8)))
+    
+    """
+        Lieli testa piemēri ar zemu zemāko iespējamo krāsojumu skaitu.
+    """
+    if 5 in args.test:
+        tests.append(("cikls 32", cycle_registrations(s, k[:32])))
+        tests.append(("cikls 33", cycle_registrations(s, k)))
+        tests.append(("bipartite", planted_registrations(s, k, 2, 2)))
+        tests.append(("tripartite", planted_registrations(s, k, 3, 3)))
+        tests.append(("quadripartite", planted_registrations(s, k, 4, 3)))
 
     results = [run_test(name, reg, args.max_iters, args.tabu_steps, args.verbose, args.exact_limit)
                for name, reg in tests]
