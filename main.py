@@ -66,7 +66,6 @@ def main():
     """
     if (3 in args.test):
         mid = random_registrations(s[:40], k[:12], 2, 4)
-        run_test("mid tests 1", mid, max_iters=2000, tabu_steps=10)
         timed("mid tests 1", mid, 2000, 10)
         
     """
@@ -74,7 +73,6 @@ def main():
     """
     if (3 in args.test):
         mid = random_registrations(s[:40], k[:12], 4, 6)
-        run_test("mid tests 2", mid, max_iters=2000, tabu_steps=10)
         timed("mid tests 2", mid, 2000, 10)
     
     """
@@ -82,7 +80,6 @@ def main():
     """
     if (4 in args.test):
         mega = random_registrations(s, k, 3, 5)
-        run_test("mega tests 1", mega, max_iters=10000, tabu_steps=10)
         timed("mega tests 1", mega, 10000, 10)
     
     """
@@ -90,7 +87,6 @@ def main():
     """
     if (4 in args.test):
         mega = random_registrations(s, k, 5, 8)
-        run_test("mega tests", mega, max_iters=10000, tabu_steps=10)
         timed("mega tests 2", mega, 10000, 10)
     
     print("\nKOPSAVILKUMS")
