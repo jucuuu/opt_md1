@@ -25,7 +25,7 @@ def run_test(name, reg, max_iters, tabu_steps=7):
     valid = solution is not None and is_valid(solution, reg)
     if solution is not None:
         print("derīgs risinājums:", valid)
-    return best_k, valid
+    return best_k, valid, solver.failed
 
 def random_registrations(students, course_ids, min_k, max_k):
     reg = RegistracijasKursiem()

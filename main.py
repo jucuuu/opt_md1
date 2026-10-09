@@ -19,8 +19,8 @@ def main():
     
     def timed(name, reg, max_iters, tabu_steps):
         start = time.perf_counter()
-        best_k, valid = run_test(name, reg, max_iters=max_iters, tabu_steps=tabu_steps)
-        results.append((name, best_k, valid, time.perf_counter() - start))
+        best_k, valid, fail_info = run_test(name, reg, max_iters=max_iters, tabu_steps=tabu_steps)
+        results.append((name, best_k, valid, fail_info, time.perf_counter() - start))
     
     s = Students.all_studenti
     kursi = [
@@ -68,6 +68,14 @@ def main():
         mid = random_registrations(s[:40], k[:12], 2, 4)
         run_test("mid test", mid, max_iters=2000, tabu_steps=10)
         timed("mid test", mid, 2000, 10)
+        
+    """
+        Vidēja testa variācija: 12 kursi, 40 studenti, katram 4-6 (nejauši) kursi.
+    """
+    if (3 in args.test):
+        mid = random_registrations(s[:40], k[:12], 4, 6)
+        run_test("mid test 2", mid, max_iters=2000, tabu_steps=10)
+        timed("mid test 2", mid, 2000, 10)
     
     """
         Lielāks testa piemērs.
@@ -77,9 +85,15 @@ def main():
         run_test("mega test", mega, max_iters=10000, tabu_steps=10)
         timed("mega test", mega, 10000, 10)
     
-    for name, best_k, valid, seconds in results:
-        print(f"{name:<35} laiki: {best_k!s:>4}; derīgs: {valid!s:<5} {seconds:8.3f} s")
-    print(f"{'kopā':<35} {'':>24} {sum(r[3] for r in results):8.3f} s")
+    print("\nKOPSAVILKUMS")
+    for name, best_k, valid, fail_info, seconds in results:
+        if fail_info is None:
+            stop = "-"
+        else:
+            fail_k, reason, cost = fail_info
+            stop = f"mēģinot {fail_k}, stop_reason: {reason}, cost {cost}"
+        print(f"{name:<35} laiki: {best_k!s:>4}; derīgs: {valid!s:<5} {seconds:8.3f} s | {stop}")
+    print(f"{'kopā':<35} {sum(r[4] for r in results):8.3f} s")
     
 if __name__ == "__main__":
     main()

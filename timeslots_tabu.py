@@ -183,6 +183,7 @@ class TabuKursi:
         
         for it in range(self.max_iters):
             if self.cost_value == 0:
+                self.stop_reason = "Atrisināts"
                 log(f"DONE at iteration {it}/{self.max_iters} with max_timeslots={self.timeslots}")
                 return True
             
@@ -199,6 +200,7 @@ class TabuKursi:
             
             if not neighbourhood:
                 log("no allowed moves.")
+                self.stop_reason = "Nav atļautu gājienu"
                 break
             
             best_n_cost = min(n[2] for n in neighbourhood) # [2] -> cost
@@ -211,6 +213,7 @@ class TabuKursi:
             log("cost after:",self.cost_value)
             log("current best:",self.best_cost)
         
+        self.stop_reason = "Max iterācijas"
         log("FINISHED, best cost:",self.best_cost)
         return self.best_cost == 0
     
@@ -230,10 +233,12 @@ class TabuKursi:
     
     def tabu(self, verbose=True):
         best_k, best_solution = None, None
+        self.failed = None
         print(f"RUNNING WITH MAX_TIMESLOTS={self.timeslots}")
         while self.timeslots >= 1:
             self.reset()
             if not self.tabu_loop(verbose):
+                self.failed = (self.timeslots, self.stop_reason, self.best_cost)
                 print(f"max {self.timeslots} timeslots failed (best cost reached: {self.best_cost})")
                 break
             best_k, best_solution = self.timeslots, self.best_state.copy()
