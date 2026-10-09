@@ -66,24 +66,32 @@ def main():
     """
     if (3 in args.test):
         mid = random_registrations(s[:40], k[:12], 2, 4)
-        run_test("mid test", mid, max_iters=2000, tabu_steps=10)
-        timed("mid test", mid, 2000, 10)
+        run_test("mid tests 1", mid, max_iters=2000, tabu_steps=10)
+        timed("mid tests 1", mid, 2000, 10)
         
     """
         Vidēja testa variācija: 12 kursi, 40 studenti, katram 4-6 (nejauši) kursi.
     """
     if (3 in args.test):
         mid = random_registrations(s[:40], k[:12], 4, 6)
-        run_test("mid test 2", mid, max_iters=2000, tabu_steps=10)
-        timed("mid test 2", mid, 2000, 10)
+        run_test("mid tests 2", mid, max_iters=2000, tabu_steps=10)
+        timed("mid tests 2", mid, 2000, 10)
     
     """
-        Lielāks testa piemērs.
+        Lielāks testa piemērs, reģistrēti 3-5 kursiem.
     """
     if (4 in args.test):
         mega = random_registrations(s, k, 3, 5)
-        run_test("mega test", mega, max_iters=10000, tabu_steps=10)
-        timed("mega test", mega, 10000, 10)
+        run_test("mega tests 1", mega, max_iters=10000, tabu_steps=10)
+        timed("mega tests 1", mega, 10000, 10)
+    
+    """
+        Lielāks testa piemērs, reģistrēti 5-8 kursiem.
+    """
+    if (4 in args.test):
+        mega = random_registrations(s, k, 5, 8)
+        run_test("mega tests", mega, max_iters=10000, tabu_steps=10)
+        timed("mega tests 2", mega, 10000, 10)
     
     print("\nKOPSAVILKUMS")
     for name, best_k, valid, fail_info, seconds in results:
