@@ -1,0 +1,217 @@
+Palaists: 2026-10-10 01:44:25
+Parametri: test=[1, 2, 3, 4, 5], max_iters=20, tabu_steps=10, seed=14, verbose=False, exact_limit=2000000
+
+==============================================================================================================
+KOPSAVILKUMS
+tests                              tabu  greedy clique    exact  optimal   valid     tabu time  apstājās:
+nano tests (trijstūris, 3 laiki)      3       3      3        3  jā        True        0.000 s  mēģinot 2: Nav atļautu gājienu, cost 1
+mini tests (min=3)                    3       3      3        3  jā        True        0.000 s  mēģinot 2: Nav atļautu gājienu, cost 1
+mid tests 1 (2-4 kursi)               9       8      8        8  nē        True        0.006 s  mēģinot 8: Max iterācijas, cost 1
+mid tests 2 (4-6 kursi)              12      12     12       12  jā        True        0.004 s  mēģinot 11: Max iterācijas, cost 1
+mega tests 1 (3-5 kursi)             33      17     16       16  nē        True        0.056 s  mēģinot 33: Max iterācijas, cost 53
+mega tests 2 (5-8 kursi)             33      32     32       32  nē        True        0.060 s  mēģinot 33: Max iterācijas, cost 77
+cikls 32                              3       2      2        2  nē        True        0.155 s  mēģinot 2: Max iterācijas, cost 2
+cikls 33                             27       3      2        3  nē        True        0.076 s  mēģinot 26: Max iterācijas, cost 1
+bipartite                             2       3      2        2  jā        True        0.356 s  mēģinot 1: Nav atļautu gājienu, cost 139
+tripartite                           33       3      3        3  nē        True        0.038 s  mēģinot 33: Max iterācijas, cost 20
+quadripartite                        33       4      4        4  nē        True        0.051 s  mēģinot 33: Max iterācijas, cost 25
+kopā (tabu)                                                                            0.804 s
+
+REZULTĀTS | nano tests (trijstūris, 3 laiki): 3 LAIKI
+Eksāmeni 1. laikā: Teorētiskā bastošana 3
+Eksāmeni 2. laikā: Franču valoda 1
+Eksāmeni 3. laikā: Praktiskā kombinatoriālā optimizācija
+
+REZULTĀTS | mini tests (min=3): 3 LAIKI
+Eksāmeni 1. laikā: Praktiskā kombinatoriālā optimizācija, Matemātiskā analīze 1
+Eksāmeni 2. laikā: Teorētiskā bastošana 3, Praktiskā bastošana 1
+Eksāmeni 3. laikā: Franču valoda 1, Virtuālās vides
+
+REZULTĀTS | mid tests 1 (2-4 kursi): 9 LAIKI
+Eksāmeni 1. laikā: Matemātiskā analīze 1, Praktiskā bastošana 1, Datortīkli 100
+Eksāmeni 2. laikā: Teorētiskā bastošana 3
+Eksāmeni 3. laikā: E
+Eksāmeni 4. laikā: Virtuālās vides
+Eksāmeni 5. laikā: Franču valoda 1
+Eksāmeni 6. laikā: Praktiskā kombinatoriālā optimizācija, A
+Eksāmeni 7. laikā: D
+Eksāmeni 8. laikā: C
+Eksāmeni 9. laikā: B
+
+REZULTĀTS | mid tests 2 (4-6 kursi): 12 LAIKI
+Eksāmeni 1. laikā: A
+Eksāmeni 2. laikā: Praktiskā kombinatoriālā optimizācija
+Eksāmeni 3. laikā: Matemātiskā analīze 1
+Eksāmeni 4. laikā: Datortīkli 100
+Eksāmeni 5. laikā: Virtuālās vides
+Eksāmeni 6. laikā: E
+Eksāmeni 7. laikā: Teorētiskā bastošana 3
+Eksāmeni 8. laikā: Praktiskā bastošana 1
+Eksāmeni 9. laikā: Franču valoda 1
+Eksāmeni 10. laikā: B
+Eksāmeni 11. laikā: C
+Eksāmeni 12. laikā: D
+
+REZULTĀTS | mega tests 1 (3-5 kursi): 33 LAIKI
+Eksāmeni 1. laikā: Praktiskā kombinatoriālā optimizācija
+Eksāmeni 2. laikā: Teorētiskā bastošana 3
+Eksāmeni 3. laikā: Franču valoda 1
+Eksāmeni 4. laikā: Matemātiskā analīze 1
+Eksāmeni 5. laikā: Virtuālās vides
+Eksāmeni 6. laikā: Praktiskā bastošana 1
+Eksāmeni 7. laikā: Datortīkli 100
+Eksāmeni 8. laikā: A
+Eksāmeni 9. laikā: B
+Eksāmeni 10. laikā: C
+Eksāmeni 11. laikā: D
+Eksāmeni 12. laikā: E
+Eksāmeni 13. laikā: F
+Eksāmeni 14. laikā: G
+Eksāmeni 15. laikā: H
+Eksāmeni 16. laikā: I
+Eksāmeni 17. laikā: J
+Eksāmeni 18. laikā: K
+Eksāmeni 19. laikā: L
+Eksāmeni 20. laikā: M
+Eksāmeni 21. laikā: N
+Eksāmeni 22. laikā: O
+Eksāmeni 23. laikā: P
+Eksāmeni 24. laikā: Q
+Eksāmeni 25. laikā: R
+Eksāmeni 26. laikā: S
+Eksāmeni 27. laikā: T
+Eksāmeni 28. laikā: U
+Eksāmeni 29. laikā: V
+Eksāmeni 30. laikā: W
+Eksāmeni 31. laikā: X
+Eksāmeni 32. laikā: Y
+Eksāmeni 33. laikā: Z
+
+REZULTĀTS | mega tests 2 (5-8 kursi): 33 LAIKI
+Eksāmeni 1. laikā: Praktiskā kombinatoriālā optimizācija
+Eksāmeni 2. laikā: Teorētiskā bastošana 3
+Eksāmeni 3. laikā: Franču valoda 1
+Eksāmeni 4. laikā: Matemātiskā analīze 1
+Eksāmeni 5. laikā: Virtuālās vides
+Eksāmeni 6. laikā: Praktiskā bastošana 1
+Eksāmeni 7. laikā: Datortīkli 100
+Eksāmeni 8. laikā: A
+Eksāmeni 9. laikā: B
+Eksāmeni 10. laikā: C
+Eksāmeni 11. laikā: D
+Eksāmeni 12. laikā: E
+Eksāmeni 13. laikā: F
+Eksāmeni 14. laikā: G
+Eksāmeni 15. laikā: H
+Eksāmeni 16. laikā: I
+Eksāmeni 17. laikā: J
+Eksāmeni 18. laikā: K
+Eksāmeni 19. laikā: L
+Eksāmeni 20. laikā: M
+Eksāmeni 21. laikā: N
+Eksāmeni 22. laikā: O
+Eksāmeni 23. laikā: P
+Eksāmeni 24. laikā: Q
+Eksāmeni 25. laikā: R
+Eksāmeni 26. laikā: S
+Eksāmeni 27. laikā: T
+Eksāmeni 28. laikā: U
+Eksāmeni 29. laikā: V
+Eksāmeni 30. laikā: W
+Eksāmeni 31. laikā: X
+Eksāmeni 32. laikā: Y
+Eksāmeni 33. laikā: Z
+
+REZULTĀTS | cikls 32: 3 LAIKI
+Eksāmeni 1. laikā: Teorētiskā bastošana 3, Matemātiskā analīze 1, Praktiskā bastošana 1, A, C, E, G, I, L, N, P, R, T, W, Y
+Eksāmeni 2. laikā: Praktiskā kombinatoriālā optimizācija, Franču valoda 1, Datortīkli 100, F, H, J, M, V, X
+Eksāmeni 3. laikā: Virtuālās vides, B, D, K, O, Q, S, U
+
+REZULTĀTS | cikls 33: 27 LAIKI
+Eksāmeni 1. laikā: Franču valoda 1, Virtuālās vides, A, C, E, H, J, L, O, R, T, V, Y
+Eksāmeni 4. laikā: F, P, W
+Eksāmeni 6. laikā: Matemātiskā analīze 1, X
+Eksāmeni 8. laikā: S
+Eksāmeni 10. laikā: Datortīkli 100, G
+Eksāmeni 11. laikā: Praktiskā bastošana 1
+Eksāmeni 13. laikā: B, N
+Eksāmeni 15. laikā: U
+Eksāmeni 16. laikā: Teorētiskā bastošana 3, D
+Eksāmeni 18. laikā: I, Q
+Eksāmeni 24. laikā: Z
+Eksāmeni 25. laikā: M
+Eksāmeni 26. laikā: Praktiskā kombinatoriālā optimizācija, K
+
+REZULTĀTS | bipartite: 2 LAIKI
+Eksāmeni 1. laikā: Teorētiskā bastošana 3, Matemātiskā analīze 1, Praktiskā bastošana 1, A, C, E, G, I, K, M, O, Q, S, U, W, Y
+Eksāmeni 2. laikā: Praktiskā kombinatoriālā optimizācija, Franču valoda 1, Virtuālās vides, Datortīkli 100, B, D, F, H, J, L, N, P, R, T, V, X, Z
+
+REZULTĀTS | tripartite: 33 LAIKI
+Eksāmeni 1. laikā: Praktiskā kombinatoriālā optimizācija
+Eksāmeni 2. laikā: Teorētiskā bastošana 3
+Eksāmeni 3. laikā: Franču valoda 1
+Eksāmeni 4. laikā: Matemātiskā analīze 1
+Eksāmeni 5. laikā: Virtuālās vides
+Eksāmeni 6. laikā: Praktiskā bastošana 1
+Eksāmeni 7. laikā: Datortīkli 100
+Eksāmeni 8. laikā: A
+Eksāmeni 9. laikā: B
+Eksāmeni 10. laikā: C
+Eksāmeni 11. laikā: D
+Eksāmeni 12. laikā: E
+Eksāmeni 13. laikā: F
+Eksāmeni 14. laikā: G
+Eksāmeni 15. laikā: H
+Eksāmeni 16. laikā: I
+Eksāmeni 17. laikā: J
+Eksāmeni 18. laikā: K
+Eksāmeni 19. laikā: L
+Eksāmeni 20. laikā: M
+Eksāmeni 21. laikā: N
+Eksāmeni 22. laikā: O
+Eksāmeni 23. laikā: P
+Eksāmeni 24. laikā: Q
+Eksāmeni 25. laikā: R
+Eksāmeni 26. laikā: S
+Eksāmeni 27. laikā: T
+Eksāmeni 28. laikā: U
+Eksāmeni 29. laikā: V
+Eksāmeni 30. laikā: W
+Eksāmeni 31. laikā: X
+Eksāmeni 32. laikā: Y
+Eksāmeni 33. laikā: Z
+
+REZULTĀTS | quadripartite: 33 LAIKI
+Eksāmeni 1. laikā: Praktiskā kombinatoriālā optimizācija
+Eksāmeni 2. laikā: Teorētiskā bastošana 3
+Eksāmeni 3. laikā: Franču valoda 1
+Eksāmeni 4. laikā: Matemātiskā analīze 1
+Eksāmeni 5. laikā: Virtuālās vides
+Eksāmeni 6. laikā: Praktiskā bastošana 1
+Eksāmeni 7. laikā: Datortīkli 100
+Eksāmeni 8. laikā: A
+Eksāmeni 9. laikā: B
+Eksāmeni 10. laikā: C
+Eksāmeni 11. laikā: D
+Eksāmeni 12. laikā: E
+Eksāmeni 13. laikā: F
+Eksāmeni 14. laikā: G
+Eksāmeni 15. laikā: H
+Eksāmeni 16. laikā: I
+Eksāmeni 17. laikā: J
+Eksāmeni 18. laikā: K
+Eksāmeni 19. laikā: L
+Eksāmeni 20. laikā: M
+Eksāmeni 21. laikā: N
+Eksāmeni 22. laikā: O
+Eksāmeni 23. laikā: P
+Eksāmeni 24. laikā: Q
+Eksāmeni 25. laikā: R
+Eksāmeni 26. laikā: S
+Eksāmeni 27. laikā: T
+Eksāmeni 28. laikā: U
+Eksāmeni 29. laikā: V
+Eksāmeni 30. laikā: W
+Eksāmeni 31. laikā: X
+Eksāmeni 32. laikā: Y
+Eksāmeni 33. laikā: Z
