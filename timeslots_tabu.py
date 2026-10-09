@@ -233,9 +233,14 @@ class TabuKursi:
         print(f"RUNNING WITH MAX_TIMESLOTS={self.timeslots}")
         while self.timeslots >= 1:
             self.reset()
-            if not self.tabu_loop(verbose): break
+            if not self.tabu_loop(verbose):
+                print(f"max {self.timeslots} timeslots failed (best cost reached: {self.best_cost})")
+                break
             best_k, best_solution = self.timeslots, self.best_state.copy()
             self.timeslots -= 1
-        
-        print(f"FINAL BEST: {best_k} timeslots, cost 0")
+
+        if best_k is None:
+            print("FINAL: no valid schedule found")
+        else:
+            print(f"FINAL BEST: {best_k} timeslots, cost 0")
         return best_k, best_solution
