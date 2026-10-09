@@ -1,279 +1,85 @@
-from itertools import combinations
-from collections import deque, defaultdict
+import argparse
 import random
+import time
+from timeslots_tabu import Students, Kurss, RegistracijasKursiem
+from helpers import create_students, run_test, random_registrations
 
-
-class Kurss:
-    total = 0
-    all_kursi = []
-    
-    def __init__(self, name):
-        Kurss.total += 1
-        self.name = name
-        self.id = Kurss.total
-        Kurss.all_kursi.append(self)
-    
-    def get(self):
-        return { "name": self.name, "id": self.id }
-    
-    def get_by_id(self, id):
-        return Kurss.all_kursi[id]
-
-class Students:
-    total = 0
-    all_studenti = []
-    
-    def __init__(self, name):
-        Students.total += 1
-        self.name = name
-        self.id = Students.total
-        Students.all_studenti.append(self)
-    
-    def get(self):
-        return { "name": self.name, "id": self.id }
-    
-    def get_by_id(self, id):
-        return Students.all_studenti[id]
-    
-class RegistracijasKursiem:
-    """
-        {
-            "studenta_id": ["1kursa_id","2kursa_id",...],
-            "1": [1,2,3],
-            "2": [2,4],
-            ...
-        }
-    """
-    def __init__(self, registracijas_kursiem=None):
-        self.dict = dict(registracijas_kursiem) if registracijas_kursiem else {}
-    
-    def insert(self, students, kursi):
-        if isinstance(kursi, list):
-            self.dict[students.id] = kursi
-        else:
-            self.dict[students.id] = [kursi]
-    
-    def get(self):
-        return self.dict
-    
-    def get_vertices(self):
-        # flat map of dict values
-        return sorted({ x for v in self.dict.values() for x in v })
-    
-    def get_edges(self) -> set[tuple]:
-        # returns list of tuples [(course1,course2), (...), ...]
-        edges = set()
-        for course_list in self.dict.values():
-            for pair in combinations(sorted(set(course_list)), 2):
-                edges.add(pair)
-        return edges
-class TabuState:
-    """
-        { class_id: color_id }[]
-    """
-    def __init__(self, courses=None, state=None):
-        self.state = dict(state) if state else { c: 1 for c in (courses or []) }
-    
-    def set_vertex_color(self, course, color):
-        self.state[course] = color
-    
-    def get_vertex_color(self, course):
-        return self.state[course]
-    
-    def get_colors(self):
-        return self.state.values()
-    
-    def copy(self):
-        return TabuState(state=self.state)
-
-    def __repr__(self):
-        return f"{self.state}"
-
-class TabuKursi:
-    def __init__(self, tabu_queue_steps, timeslots, max_iters, registracijas_kursiem: RegistracijasKursiem):
-        super().__init__()
-        self.tabu_queue = deque(maxlen=tabu_queue_steps)  # not allowed!
-        self.best_graph = {}                              # best state
-        self.timeslots = timeslots                        # timeslots (gradually lowered to check if it's still doable)
-        
-        # graph stuff
-        self.vertices = registracijas_kursiem.get_vertices()   # vertex - a course
-        self.edges = registracijas_kursiem.get_edges()         # edge - between all courses that a student takes at once
-        
-        self.neighbor_vertices = defaultdict(set)
-        for u,v in self.edges:
-            self.neighbor_vertices[u].add(v)
-            self.neighbor_vertices[v].add(u)
-        
-        # starting state: all vertices are the same color
-        # because we start by coloring all vertices the same color, all edges create "conflicts" between vertices
-        self.state = TabuState(self.vertices)
-        self.starting_state = TabuState(self.vertices)
-        self.conflicts = set(self.edges)
-        self.cost_value = len(self.conflicts)
-        
-        self.best_state = self.state.copy()
-        self.best_cost = self.cost_value
-        
-        self.max_iters = max_iters
-        
-    def cost(self):
-        """
-            Šķautņu skaits, kam abos galos ir vienas krāsas virsotnes.
-        """
-        return sum(1 for u,v in self.edges if self.edges if self.state.get_vertex_color(u) == self.state.get_vertex_color(v))
-    
-    def conflicts_if_step(self, kurss, color):
-        """Prognosis for conflict count if step is made..."""
-        previous_color = self.state.get_vertex_color(kurss)
-        delta = 0
-        for v in self.neighbor_vertices[kurss]:
-            v_color = self.state.get_vertex_color(v)
-            if v_color == color: delta += 1
-            elif v_color == previous_color: delta -= 1
-        return delta
-    
-    def neighbourhood(self):
-        """
-            Gājieni, ko var veikt (bez tabu...).
-        """
-        conflicting = {v for edge in self.conflicts for v in edge}
-        neighbours = []
-        
-        for kurss in conflicting:
-            current_color = self.state.get_vertex_color(kurss)
-            for color in range(1, self.timeslots + 1):
-                if color == current_color: continue
-                new_cost = self.cost_value + self.conflicts_if_step(kurss, color)
-                if (((kurss, color) in self.tabu_queue) and new_cost >= self.best_cost): continue
-                neighbours.append((kurss, color, new_cost))
-        
-        return neighbours
-    
-    def _edge(self, u, v):
-        return (u,v) if u < v else (v,u)
-    
-    def step(self, kurss, color):
-        """
-            Gājiens: 1 pārkrāsota virsotne.
-        """
-        previous_col = self.state.get_vertex_color(kurss)
-        self.state.set_vertex_color(kurss, color)
-        
-        for v in self.neighbor_vertices[kurss]:
-            v_color = self.state.get_vertex_color(v)
-            e = self._edge(kurss, v)
-            if v_color == previous_col: self.conflicts.discard(e) # resolved conflict!
-            elif v_color == color: self.conflicts.add(e)
-        
-        self.cost_value = len(self.conflicts)
-        
-        self.tabu_queue.append((kurss, previous_col))
-        
-        if self.cost_value < self.best_cost:
-            self.best_cost = self.cost_value
-            self.best_state = self.state.copy()
-    
-    def tabu_loop(self, verbose=True):
-        def log(*args):
-            if verbose: print(*args)
-        
-        log(f"Beginning tabu... checking if max_timeslots={self.timeslots} is enough, curr cost={self.cost_value}")
-        log("state:", self.state)
-        
-        for it in range(self.max_iters):
-            if self.cost_value == 0:
-                log(f"DONE at iteration {it}/{self.max_iters} with max_timeslots={self.timeslots}")
-                return True
-            
-            log(f"ITERATION {it}")
-            log("state before:",self.state)
-            log("tabu before:",self.tabu_queue)
-            log(f"cost before: {self.cost_value}")
-            log(f"conflicts before: {sorted(self.conflicts)}")
-            
-            neighbourhood = self.neighbourhood()
-            log(f"neighbourhood move cnt: {len(neighbourhood)}")
-            for kurss, color, cost in sorted(neighbourhood, key=lambda n: n[2]):
-                log(f"course {kurss} / color {color} / cost {cost}")
-            
-            if not neighbourhood:
-                log("no allowed moves.")
-                break
-            
-            best_n_cost = min(n[2] for n in neighbourhood) # [2] -> cost
-            kurss, color, _ = random.choice([n for n in neighbourhood if n[2] == best_n_cost])
-            
-            self.step(kurss, color)
-            
-            log("tabu after:", list(self.tabu_queue))
-            log("state after:", self.state)
-            log("cost after:",self.cost_value)
-            log("current best:",self.best_cost)
-        
-        log("FINISHED, best cost:",self.best_cost)
-        return self.best_cost == 0
-    
-    def reset(self):
-        """
-            Sākuma stāvoklis.
-        """
-        self.state = self.starting_state.copy()
-        self.conflicts = {e for e in self.edges
-                        if self.state.get_vertex_color(e[0]) == self.state.get_vertex_color(e[1])}
-        self.cost_value = len(self.conflicts)
-
-        self.tabu_queue.clear()
-
-        self.best_state = self.state.copy()
-        self.best_cost = self.cost_value
-    
-    def tabu(self, verbose=True):
-        best_k, best_solution = None, None
-        print(f"RUNNING WITH MAX_TIMESLOTS={self.timeslots}")
-        while self.timeslots >= 1:
-            self.reset()
-            if not self.tabu_loop(verbose): break
-            best_k, best_solution = self.timeslots, self.best_state.copy()
-            self.timeslots -= 1
-        return best_k, best_solution
-
-def create_students(n):
-    for i in range(n):
-        Students(f"Vārds_{i}")
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", type=int, nargs="+", choices=[1,2,3,4], default=[1,2,3,4],
+                        help="1=primitīvs piemērs, 2=mazs piemērs, 3=vidējais piemērs, 4=lielais testa piemērs (pēc noklusējuma visi)")
+    parser.add_argument("--seed",type=int,default=14)
+    return parser.parse_args()
 
 def main():
-    create_students(20)
-    all_studenti = Students.all_studenti
+    args = parse_args()
+    random.seed(14)
+    create_students(200)
+    results = []  # (test_name, best_k, valid, seconds)
+    
+    def timed(name, reg, max_iters, tabu_steps):
+        start = time.perf_counter()
+        best_k, valid = run_test(name, reg, max_iters=max_iters, tabu_steps=tabu_steps)
+        results.append((name, best_k, valid, time.perf_counter() - start))
+    
+    s = Students.all_studenti
     kursi = [
         Kurss("Praktiskā kombinatoriālā optimizācija"),
         Kurss("Teorētiskā bastošana 3"),
         Kurss("Franču valoda 1"),
         Kurss("Matemātiskā analīze 1"),
         Kurss("Virtuālās vides"),
+        Kurss("Praktiskā bastošana 1"),
         Kurss("Datortīkli 100"),
         *[Kurss(x) for x in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
     ]
+    print(len(kursi))
+    k = [kurss.id for kurss in kursi]
     
     """
-        Primitīvs testa piemērs.
+        Primitīvs testa piemērs - trijstūris.
     """
-    nano_registracijas_kursiem = []
+    if (1 in args.test):
+        nano_test = RegistracijasKursiem()
+        nano_test.insert(s[0], [k[0], k[1]])
+        nano_test.insert(s[1], [k[1], k[2]])
+        nano_test.insert(s[2], [k[0], k[2]])
+        timed("nano tests (trijstūris, 3 laiki)", nano_test, 100, 10)
+    
     
     """
         Mazs testa piemērs: 6 kursi, 5 studenti.
+        Cikls 1-2-3 + cikls 3-4-5-6-1 -> minimālais skaits: 3 laiki.
     """
-    mini_registracijas_kursiem = []
-    
+    if (2 in args.test):
+        mini_test = RegistracijasKursiem()
+        mini_test.insert(s[0], [k[0], k[1], k[2]])
+        mini_test.insert(s[1], [k[2], k[3]])
+        mini_test.insert(s[2], [k[3], k[4]])
+        mini_test.insert(s[3], [k[4], k[5]])
+        mini_test.insert(s[4], [k[5], k[0]])
+        timed("mini tests (min=3)", mini_test, 500, 10)
+
+        
     """
-        Vidējs testa piemērs.
+        Vidējs testa piemērs: 12 kursi, 40 studenti, katram 2-4 (nejauši) kursi.
     """
-    mid_registracijas_kursiem = []
+    if (3 in args.test):
+        mid = random_registrations(s[:40], k[:12], 2, 4)
+        run_test("mid test", mid, max_iters=2000, tabu_steps=10)
+        timed("mid test", mid, 2000, 10)
     
     """
         Lielāks testa piemērs.
     """
-    mega_registracijas_kursiem = []
+    if (4 in args.test):
+        mega = random_registrations(s, k, 3, 5)
+        run_test("mega test", mega, max_iters=10000, tabu_steps=10)
+        timed("mega test", mega, 10000, 10)
+    
+    for name, best_k, valid, seconds in results:
+        print(f"{name:<35} laiki: {best_k!s:>4}; derīgs: {valid!s:<5} {seconds:8.3f} s")
+    print(f"{'kopā':<35} {'':>24} {sum(r[3] for r in results):8.3f} s")
     
 if __name__ == "__main__":
     main()
