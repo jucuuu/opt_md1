@@ -1,0 +1,369 @@
+{
+  "started": "2026-10-10T01:03:11",
+  "args": {
+    "test": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "max_iters": 100000,
+    "tabu_steps": 10,
+    "seed": 14,
+    "verbose": false,
+    "exact_limit": 2000000
+  },
+  "results": [
+    {
+      "name": "nano tests (trijstūris, 3 laiki)",
+      "best_k": 3,
+      "greedy_k": 3,
+      "lower": 3,
+      "exact": 3,
+      "valid": true,
+      "failed": [
+        2,
+        "Nav atļautu gājienu",
+        1
+      ],
+      "seconds": 0.00020729999960167333,
+      "graph_key": "c710295ac69753c642a727e8d9c458a853fae5e9",
+      "schedule": {
+        "1": [
+          "Franču valoda 1"
+        ],
+        "2": [
+          "Teorētiskā bastošana 3"
+        ],
+        "3": [
+          "Praktiskā kombinatoriālā optimizācija"
+        ]
+      }
+    },
+    {
+      "name": "mini tests (min=3)",
+      "best_k": 3,
+      "greedy_k": 3,
+      "lower": 3,
+      "exact": 3,
+      "valid": true,
+      "failed": [
+        2,
+        "Nav atļautu gājienu",
+        1
+      ],
+      "seconds": 0.0004351999959908426,
+      "graph_key": "3e732c1ca0563d06cdae453b7aafb5f8a5b79eec",
+      "schedule": {
+        "1": [
+          "Teorētiskā bastošana 3",
+          "Matemātiskā analīze 1",
+          "Praktiskā bastošana 1"
+        ],
+        "2": [
+          "Franču valoda 1"
+        ],
+        "3": [
+          "Praktiskā kombinatoriālā optimizācija",
+          "Virtuālās vides"
+        ]
+      }
+    },
+    {
+      "name": "mid tests 1 (2-4 kursi)",
+      "best_k": 9,
+      "greedy_k": 8,
+      "lower": 8,
+      "exact": 8,
+      "valid": true,
+      "failed": [
+        8,
+        "Max iterācijas",
+        1
+      ],
+      "seconds": 2.8408022000003257,
+      "graph_key": "215ded96984f45bcbc419b4a0c8b266d995dc01a",
+      "schedule": {
+        "1": [
+          "Franču valoda 1",
+          "Matemātiskā analīze 1"
+        ],
+        "2": [
+          "Praktiskā kombinatoriālā optimizācija"
+        ],
+        "3": [
+          "Datortīkli 100",
+          "B"
+        ],
+        "4": [
+          "Virtuālās vides"
+        ],
+        "5": [
+          "C"
+        ],
+        "6": [
+          "Teorētiskā bastošana 3",
+          "Praktiskā bastošana 1"
+        ],
+        "7": [
+          "A"
+        ],
+        "8": [
+          "D"
+        ],
+        "9": [
+          "E"
+        ]
+      }
+    },
+    {
+      "name": "mid tests 2 (4-6 kursi)",
+      "best_k": 12,
+      "greedy_k": 12,
+      "lower": 12,
+      "exact": 12,
+      "valid": true,
+      "failed": [
+        11,
+        "Max iterācijas",
+        1
+      ],
+      "seconds": 3.8388532000026316,
+      "graph_key": "51735b0f8250d9389d6921b1773dc38185f00932",
+      "schedule": {
+        "1": [
+          "Praktiskā kombinatoriālā optimizācija"
+        ],
+        "2": [
+          "Matemātiskā analīze 1"
+        ],
+        "3": [
+          "Virtuālās vides"
+        ],
+        "4": [
+          "B"
+        ],
+        "5": [
+          "Praktiskā bastošana 1"
+        ],
+        "6": [
+          "D"
+        ],
+        "7": [
+          "A"
+        ],
+        "8": [
+          "Teorētiskā bastošana 3"
+        ],
+        "9": [
+          "C"
+        ],
+        "10": [
+          "E"
+        ],
+        "11": [
+          "Franču valoda 1"
+        ],
+        "12": [
+          "Datortīkli 100"
+        ]
+      }
+    },
+    {
+      "name": "mega tests 1 (3-5 kursi)",
+      "best_k": 16,
+      "greedy_k": 17,
+      "lower": 16,
+      "exact": 16,
+      "valid": true,
+      "failed": [
+        15,
+        "Max iterācijas",
+        2
+      ],
+      "seconds": 25.099649600000703,
+      "graph_key": "f2e8b5c66383740034e1ab0dbbea886c2e9c5630",
+      "schedule": {
+        "1": [
+          "E",
+          "J",
+          "T"
+        ],
+        "2": [
+          "F",
+          "K"
+        ],
+        "3": [
+          "G",
+          "Q"
+        ],
+        "4": [
+          "Praktiskā bastošana 1",
+          "L"
+        ],
+        "5": [
+          "C",
+          "P"
+        ],
+        "6": [
+          "D",
+          "U"
+        ],
+        "7": [
+          "Matemātiskā analīze 1",
+          "Z"
+        ],
+        "8": [
+          "Teorētiskā bastošana 3",
+          "H"
+        ],
+        "9": [
+          "Datortīkli 100",
+          "O"
+        ],
+        "10": [
+          "Praktiskā kombinatoriālā optimizācija",
+          "A"
+        ],
+        "11": [
+          "M",
+          "N"
+        ],
+        "12": [
+          "S",
+          "V"
+        ],
+        "13": [
+          "B",
+          "W"
+        ],
+        "14": [
+          "Virtuālās vides",
+          "R"
+        ],
+        "15": [
+          "Franču valoda 1",
+          "Y"
+        ],
+        "16": [
+          "I",
+          "X"
+        ]
+      }
+    },
+    {
+      "name": "mega tests 2 (5-8 kursi)",
+      "best_k": 32,
+      "greedy_k": 32,
+      "lower": 32,
+      "exact": 32,
+      "valid": true,
+      "failed": [
+        31,
+        "Max iterācijas",
+        1
+      ],
+      "seconds": 22.230707599999732,
+      "graph_key": "425e8a3cf9c69fa625dabb974ae93f8571c06ef9",
+      "schedule": {
+        "1": [
+          "X",
+          "Y"
+        ],
+        "2": [
+          "O"
+        ],
+        "3": [
+          "U"
+        ],
+        "4": [
+          "P"
+        ],
+        "5": [
+          "Virtuālās vides"
+        ],
+        "6": [
+          "Praktiskā kombinatoriālā optimizācija"
+        ],
+        "7": [
+          "Matemātiskā analīze 1"
+        ],
+        "8": [
+          "F"
+        ],
+        "9": [
+          "B"
+        ],
+        "10": [
+          "J"
+        ],
+        "11": [
+          "T"
+        ],
+        "12": [
+          "A"
+        ],
+        "13": [
+          "Q"
+        ],
+        "14": [
+          "G"
+        ],
+        "15": [
+          "M"
+        ],
+        "16": [
+          "L"
+        ],
+        "17": [
+          "Praktiskā bastošana 1"
+        ],
+        "18": [
+          "R"
+        ],
+        "19": [
+          "E"
+        ],
+        "20": [
+          "N"
+        ],
+        "21": [
+          "Z"
+        ],
+        "22": [
+          "K"
+        ],
+        "23": [
+          "W"
+        ],
+        "24": [
+          "I"
+        ],
+        "25": [
+          "D"
+        ],
+        "26": [
+          "Datortīkli 100"
+        ],
+        "27": [
+          "V"
+        ],
+        "28": [
+          "Teorētiskā bastošana 3"
+        ],
+        "29": [
+          "Franču valoda 1"
+        ],
+        "30": [
+          "H"
+        ],
+        "31": [
+          "S"
+        ],
+        "32": [
+          "C"
+        ]
+      }
+    }
+  ]
+}
