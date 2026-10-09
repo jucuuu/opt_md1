@@ -1,4 +1,7 @@
 from itertools import combinations
+from collections import deque, defaultdict
+import random
+
 
 class Kurss:
     total = 0
@@ -32,7 +35,6 @@ class Students:
     def get_by_id(self, id):
         return Students.all_studenti[id]
     
-
 class RegistracijasKursiem:
     """
         {
@@ -42,12 +44,11 @@ class RegistracijasKursiem:
             ...
         }
     """
-    def __init__(self, registracijas_kursiem={}):
-        super().__init__()
-        self.dict = registracijas_kursiem
+    def __init__(self, registracijas_kursiem=None):
+        self.dict = dict(registracijas_kursiem) if registracijas_kursiem else {}
     
     def insert(self, students, kursi):
-        if (isinstance(kursi), list):
+        if isinstance(kursi, list):
             self.dict[students.id] = kursi
         else:
             self.dict[students.id] = [kursi]
@@ -59,83 +60,183 @@ class RegistracijasKursiem:
         # flat map of dict values
         return sorted({ x for v in self.dict.values() for x in v })
     
-    def get_edges(self) -> list[tuple]:
+    def get_edges(self) -> set[tuple]:
         # returns list of tuples [(course1,course2), (...), ...]
-        edges = []
+        edges = set()
         for course_list in self.dict.values():
             for pair in combinations(sorted(set(course_list)), 2):
                 edges.add(pair)
-        
-        return list(set(edges))
-
+        return edges
 class TabuState:
     """
         { class_id: color_id }[]
     """
-    def __init__(self, courses=[], state={}):
-        self.state = state if state else { c: 1 for c in courses }
+    def __init__(self, courses=None, state=None):
+        self.state = dict(state) if state else { c: 1 for c in (courses or []) }
     
     def set_vertex_color(self, course, color):
         self.state[course] = color
     
+    def get_vertex_color(self, course):
+        return self.state[course]
+    
     def get_colors(self):
         return self.state.values()
+    
+    def copy(self):
+        return TabuState(state=self.state)
+
+    def __repr__(self):
+        return f"{self.state}"
 
 class TabuKursi:
-    def __init__(self, tabu_queue_steps, registracijas_kursiem: RegistracijasKursiem):
+    def __init__(self, tabu_queue_steps, timeslots, max_iters, registracijas_kursiem: RegistracijasKursiem):
         super().__init__()
-        self.tabu_queue = []                          # not allowed!
-        self.tabu_queue_steps = tabu_queue_steps      # how many of the last moves to remember
-        self.best_graph = {}                          # best state
-        
-        # cost function == current number of colors
-        self.colors = 0
+        self.tabu_queue = deque(maxlen=tabu_queue_steps)  # not allowed!
+        self.best_graph = {}                              # best state
+        self.timeslots = timeslots                        # timeslots (gradually lowered to check if it's still doable)
         
         # graph stuff
         self.vertices = registracijas_kursiem.get_vertices()   # vertex - a course
         self.edges = registracijas_kursiem.get_edges()         # edge - between all courses that a student takes at once
         
+        self.neighbor_vertices = defaultdict(set)
+        for u,v in self.edges:
+            self.neighbor_vertices[u].add(v)
+            self.neighbor_vertices[v].add(u)
+        
         # starting state: all vertices are the same color
         # because we start by coloring all vertices the same color, all edges create "conflicts" between vertices
         self.state = TabuState(self.vertices)
-        self.cost_value = len(self.edges)                  
+        self.starting_state = TabuState(self.vertices)
         self.conflicts = set(self.edges)
-    
+        self.cost_value = len(self.conflicts)
+        
+        self.best_state = self.state.copy()
+        self.best_cost = self.cost_value
+        
+        self.max_iters = max_iters
+        
     def cost(self):
         """
             Šķautņu skaits, kam abos galos ir vienas krāsas virsotnes.
         """
-        cost = 0
-        for edge in self.edges:
-            if self.state[edge[0]] == self.state[edge[1]]:
-                cost += 1
-        return cost
+        return sum(1 for u,v in self.edges if self.edges if self.state.get_vertex_color(u) == self.state.get_vertex_color(v))
+    
+    def conflicts_if_step(self, kurss, color):
+        """Prognosis for conflict count if step is made..."""
+        previous_color = self.state.get_vertex_color(kurss)
+        delta = 0
+        for v in self.neighbor_vertices[kurss]:
+            v_color = self.state.get_vertex_color(v)
+            if v_color == color: delta += 1
+            elif v_color == previous_color: delta -= 1
+        return delta
     
     def neighbourhood(self):
         """
-            Risinājumi, ko var panākt ar vienu gājienu (izņemot tabu gājienus).
-            
-            returns { neighbour_count: int, neighbours: list[TabuState] }
+            Gājieni, ko var veikt (bez tabu...).
         """
-        pass
+        conflicting = {v for edge in self.conflicts for v in edge}
+        neighbours = []
+        
+        for kurss in conflicting:
+            current_color = self.state.get_vertex_color(kurss)
+            for color in range(1, self.timeslots + 1):
+                if color == current_color: continue
+                new_cost = self.cost_value + self.conflicts_if_step(kurss, color)
+                if (((kurss, color) in self.tabu_queue) and new_cost >= self.best_cost): continue
+                neighbours.append((kurss, color, new_cost))
+        
+        return neighbours
     
-    def step(self, state, kurss, color):
+    def _edge(self, u, v):
+        return (u,v) if u < v else (v,u)
+    
+    def step(self, kurss, color):
         """
             Gājiens: 1 pārkrāsota virsotne.
         """
-        new_state = TabuState(state=state)
-        new_state.set_vertex_color(kurss, color)
+        previous_col = self.state.get_vertex_color(kurss)
+        self.state.set_vertex_color(kurss, color)
         
-        # process tabu queue
-        if len(self.tabu_queue) == self.tabu_queue_steps:
-            self.tabu_queue.pop(1)
-        self.tabu_queue.append(( kurss, self.state[kurss] )) # don't recolor the vertex back for a while
+        for v in self.neighbor_vertices[kurss]:
+            v_color = self.state.get_vertex_color(v)
+            e = self._edge(kurss, v)
+            if v_color == previous_col: self.conflicts.discard(e) # resolved conflict!
+            elif v_color == color: self.conflicts.add(e)
         
-        self.state = new_state
+        self.cost_value = len(self.conflicts)
+        
+        self.tabu_queue.append((kurss, previous_col))
+        
+        if self.cost_value < self.best_cost:
+            self.best_cost = self.cost_value
+            self.best_state = self.state.copy()
     
-    def tabu(self):
-        # start with the first class?
-        pass
+    def tabu_loop(self, verbose=True):
+        def log(*args):
+            if verbose: print(*args)
+        
+        log(f"Beginning tabu... checking if max_timeslots={self.timeslots} is enough, curr cost={self.cost_value}")
+        log("state:", self.state)
+        
+        for it in range(self.max_iters):
+            if self.cost_value == 0:
+                log(f"DONE at iteration {it}/{self.max_iters} with max_timeslots={self.timeslots}")
+                return True
+            
+            log(f"ITERATION {it}")
+            log("state before:",self.state)
+            log("tabu before:",self.tabu_queue)
+            log(f"cost before: {self.cost_value}")
+            log(f"conflicts before: {sorted(self.conflicts)}")
+            
+            neighbourhood = self.neighbourhood()
+            log(f"neighbourhood move cnt: {len(neighbourhood)}")
+            for kurss, color, cost in sorted(neighbourhood, key=lambda n: n[2]):
+                log(f"course {kurss} / color {color} / cost {cost}")
+            
+            if not neighbourhood:
+                log("no allowed moves.")
+                break
+            
+            best_n_cost = min(n[2] for n in neighbourhood) # [2] -> cost
+            kurss, color, _ = random.choice([n for n in neighbourhood if n[2] == best_n_cost])
+            
+            self.step(kurss, color)
+            
+            log("tabu after:", list(self.tabu_queue))
+            log("state after:", self.state)
+            log("cost after:",self.cost_value)
+            log("current best:",self.best_cost)
+        
+        log("FINISHED, best cost:",self.best_cost)
+        return self.best_cost == 0
+    
+    def reset(self):
+        """
+            Sākuma stāvoklis.
+        """
+        self.state = self.starting_state.copy()
+        self.conflicts = {e for e in self.edges
+                        if self.state.get_vertex_color(e[0]) == self.state.get_vertex_color(e[1])}
+        self.cost_value = len(self.conflicts)
+
+        self.tabu_queue.clear()
+
+        self.best_state = self.state.copy()
+        self.best_cost = self.cost_value
+    
+    def tabu(self, verbose=True):
+        best_k, best_solution = None, None
+        print(f"RUNNING WITH MAX_TIMESLOTS={self.timeslots}")
+        while self.timeslots >= 1:
+            self.reset()
+            if not self.tabu_loop(verbose): break
+            best_k, best_solution = self.timeslots, self.best_state.copy()
+            self.timeslots -= 1
+        return best_k, best_solution
 
 def create_students(n):
     for i in range(n):
@@ -159,7 +260,6 @@ def main():
     """
     nano_registracijas_kursiem = []
     
-    
     """
         Mazs testa piemērs: 6 kursi, 5 studenti.
     """
@@ -174,3 +274,7 @@ def main():
         Lielāks testa piemērs.
     """
     mega_registracijas_kursiem = []
+    
+if __name__ == "__main__":
+    main()
+
