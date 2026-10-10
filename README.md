@@ -1,5 +1,7 @@
 # opt_md1
 
+Izmantotas tikai native Python bibliotēkas.
+
 Palaiž visus testus:
 
 ```
